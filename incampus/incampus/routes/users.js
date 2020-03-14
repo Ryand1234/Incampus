@@ -4,7 +4,7 @@ const { check,validationResult } = require('express-validator');
 const { sanitizeBody } = require('express-validator');
 const User = require('../config/schema')
 
-
+/* to initialize database
 router.get('/:token',
 [
   check('username').isLength({min: 3}),
@@ -48,7 +48,7 @@ router.get('/:token',
 	res.send('respond with a resource');
 
 });
-
+*/
 router.post('/:token',
 [
   check('name').isLength({min: 3}).isAlpha(),
@@ -97,7 +97,7 @@ router.post('/:token',
  			}
  														}
 	}
- /*
+ /* 	for testing
  			User.findOne({accessToken: req.params.token}, function(err,existingUser){
  			if (err) console.log(err)
  			else
@@ -109,6 +109,7 @@ router.post('/:token',
 				existingUser.profession = req.body.profession;
 				existingUser.education = req.body.education;
 				existingUser.course = req.body.course;
+				existingUser.image.data = req.body.image;
 				existingUser.save();
 				console.log(existingUser)		
 				}
@@ -118,6 +119,7 @@ router.post('/:token',
 
 	res.send('respond with a resource');
 	});
+
 	
 
 

@@ -53,11 +53,11 @@ const userSchema = new mongoose.Schema ({
 
 			},
 
-	// for testing
+	/* for testing
 	accessToken: {
 		type: String
 			},
-
+*/
 	profession: {
 		type : String
 
