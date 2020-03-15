@@ -1,15 +1,16 @@
 var express = require('express');
-var router = express.Router();
 const { check,validationResult } = require('express-validator');
-const { sanitizeBody } = require('express-validator');
 const User = require('../config/schema')
+const fs = require('fs')
+var router = express.Router();
 
 /* to initialize database
 router.get('/:token',
 [
   check('username').isLength({min: 3}),
   check('email').isLength({min: 1}).isEmail(),
-  check('password').isLength({min: 6})
+  check('password').isLength({min: 6}),
+  check('number').isLength({min:10, max:10}).isNumeric(),
   
   
 ],
@@ -28,6 +29,7 @@ router.get('/:token',
 		nuserinfo.username = req.body.username;
 		nuserinfo.email = req.body.email;
 		nuserinfo.password = req.body.password;
+		nuserinfo.number = req.body.number;
 		console.log(nuserinfo)
 
 		
@@ -49,9 +51,10 @@ router.get('/:token',
 
 });
 */
-router.post('/:token',
+router.post('/',
 [
-  check('name').isLength({min: 3}).isAlpha(),
+  check('lname').isLength({min: 3}).isAlpha(),
+  check('fname').isLength({min: 3}).isAlpha(),
   check('education').isLength({min: 1}),
   check('gender').isLength({min: 1}).isAlpha(),
   check('profession').isLength({min: 1}).isAlpha(),
@@ -84,13 +87,16 @@ router.post('/:token',
          		if(err)
          			return res.sendStatus(403);
 				var existingUser = user;
-				existingUser.name = req.body.name;
+				existingUser.name.lname = req.body.lname;
+				existingUser.name.fname = req.body.fname;
 				existingUser.gender = req.body.gender;
 				existingUser.university = req.body.university;
 				existingUser.dob = req.body.dob;
 				existingUser.profession = req.body.profession;
 				existingUser.education = req.body.education;
 				existingUser.course = req.body.course;
+				existingUser.image.data = fs.readFileSync(req.body.image.path);
+				existingUser.image.contentType = 'image/png';
 				existingUser.save();
 				next();
        						});
@@ -102,23 +108,27 @@ router.post('/:token',
  			if (err) console.log(err)
  			else
 			{	
-				existingUser.name = req.body.name;
+				existingUser.name.lname = req.body.lname;
+				existingUser.name.fname = req.body.fname;
 				existingUser.gender = req.body.gender;
 				existingUser.university = req.body.university;
 				existingUser.dob = req.body.dob;
 				existingUser.profession = req.body.profession;
 				existingUser.education = req.body.education;
 				existingUser.course = req.body.course;
-				existingUser.image.data = req.body.image;
+				let image_data = fs.readFileSync(req.body.image.path)
+				existingUser.image.data = image_data.toString('base64');
+				existingUser.image.contentType = 'image/png';
 				existingUser.save();
 				console.log(existingUser)		
 				}
  			});
 
-			//console.log(existingUser)*/
-
+			//console.log(existingUser)
+	}*/
 	res.send('respond with a resource');
-	});
+	
+ });
 
 	
 
