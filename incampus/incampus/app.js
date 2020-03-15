@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/register', usersRouter);
+app.use('/register/', usersRouter);
 
 //mongoose.connect('mongodb://localhost:5000/myapp', {useNewUrlParser: true});
 

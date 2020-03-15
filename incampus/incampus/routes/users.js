@@ -4,54 +4,8 @@ const User = require('../config/schema')
 const fs = require('fs')
 var router = express.Router();
 
-/* to initialize database
-router.get('/:token',
-[
-  check('username').isLength({min: 3}),
-  check('email').isLength({min: 1}).isEmail(),
-  check('password').isLength({min: 6}),
-  check('number').isLength({min:10, max:10}).isNumeric(),
-  
-  
-],
- async (req, res, next) => {
-	
-	const error = validationResult(req);
-	if(!error.isEmpty())
-	{
-		console.log("Error: ",error.array());
-		//res.render('form', {errors: error.array()})
-	}
-	else
-	{
-		nuserinfo = {}
-		nuserinfo.accessToken = req.params.token;
-		nuserinfo.username = req.body.username;
-		nuserinfo.email = req.body.email;
-		nuserinfo.password = req.body.password;
-		nuserinfo.number = req.body.number;
-		console.log(nuserinfo)
 
-		
-
-		var newuser = new User(nuserinfo);
-
-		try{
-			    const saveduser = await newuser.save();
-				res.status(200).send(saveduser);
-  			}catch(err){
-    			res.status(400).send(err);
-				console.log(err);
-			}
-
-		
-		
-	}
-	res.send('respond with a resource');
-
-});
-*/
-router.post('/',
+router.post('/userinfo/:token',
 [
   check('lname').isLength({min: 3}).isAlpha(),
   check('fname').isLength({min: 3}).isAlpha(),
@@ -60,7 +14,7 @@ router.post('/',
   check('profession').isLength({min: 1}).isAlpha(),
   check('course').isLength({min: 1}),
   check('university').isLength({min:1}),
-  check('dob').isISO8601()
+  check('dob').isISO8601(),
   
 ],
  async (req, res, next) => {
@@ -95,43 +49,44 @@ router.post('/',
 				existingUser.profession = req.body.profession;
 				existingUser.education = req.body.education;
 				existingUser.course = req.body.course;
+				existingUser.save();
+				next();
+       						});
+ 			}
+ 														});
+ 
+	}
+	res.send('User info saved');
+	
+ });
+
+router.post('/image/:token', async (req, res, next) => {
+	
+	const authHeader = req.headers['authorization'];
+		const token = authHeader && authHeader.split(' ')[1];
+
+		if(token==null)
+   			return res.sendStatus(401);
+
+	Blacklist.findOne({token:token}, function(err, found){
+		if(found)
+  		   return res.json('Token blacklisted. Cannot use this token.');
+		else{
+   			    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+         		if(err)
+         			return res.sendStatus(403);
+				var existingUser = user;
 				existingUser.image.data = fs.readFileSync(req.body.image.path);
 				existingUser.image.contentType = 'image/png';
 				existingUser.save();
 				next();
        						});
  			}
- 														}
-	}
- /* 	for testing
- 			User.findOne({accessToken: req.params.token}, function(err,existingUser){
- 			if (err) console.log(err)
- 			else
-			{	
-				existingUser.name.lname = req.body.lname;
-				existingUser.name.fname = req.body.fname;
-				existingUser.gender = req.body.gender;
-				existingUser.university = req.body.university;
-				existingUser.dob = req.body.dob;
-				existingUser.profession = req.body.profession;
-				existingUser.education = req.body.education;
-				existingUser.course = req.body.course;
-				let image_data = fs.readFileSync(req.body.image.path)
-				existingUser.image.data = image_data.toString('base64');
-				existingUser.image.contentType = 'image/png';
-				existingUser.save();
-				console.log(existingUser)		
-				}
- 			});
-
-			//console.log(existingUser)
-	}*/
-	res.send('respond with a resource');
+ 														});
+		
+	res.send('Image Saved');
 	
  });
-
-	
-
 
 
 

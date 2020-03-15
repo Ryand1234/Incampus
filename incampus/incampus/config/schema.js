@@ -76,8 +76,8 @@ const userSchema = new mongoose.Schema ({
 	accessToken: {
 		type: String
 			
-		},*/
-
+		},
+*/
 	profession: {
 		type : String
 
